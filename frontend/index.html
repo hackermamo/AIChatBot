@@ -6,151 +6,153 @@
     <title>AI Posting Agent</title>
   </head>
   <style>
-    :root {
-      --bg-color: #f4f4f4;
-      --text-color: #222;
-      --chat-bg: white;
-      --bubble-user: #dcf8c6;
-      --bubble-agent: #e6e6e6;
-      --primary: #4f46e5;
-      --shadow: rgba(0, 0, 0, 0.1);
-    }
-    
-    body.dark-mode {
-      --bg-color: #1f1f1f;
-      --text-color: #eee;
-      --chat-bg: #2a2a2a;
-      --bubble-user: #33691e;
-      --bubble-agent: #424242;
-    }
-    
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background: var(--bg-color);
-      color: var(--text-color);
-      block-size: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    
-    .container {
-      display: flex;
-      flex-direction: column;
-      block-size: 100vh;
-    }
-    
-    /* HEADER/NAVBAR */
-    .header {
-      background: linear-gradient(to right, #4f46e5, #3b82f6);
-      color:rgb(222, 225, 44);
-      padding: 15px 10px;
-      display: flex;
-      justify-content: space-between ;
-      align-items: center;
-      position: fixed;
-      inset-block-start: 0;
-      inline-size: 100%;
-      z-index: 1000;
-    }
-    
-    .header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-   
-    .header-right {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    
-    .header-right input {
-      padding: 8px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-    }
-    
-    /* CHATBOX */
-    .chatbox {
-      margin-block-start: 70px; /* below header */
-      margin-block-end: 70px; /* above input bar */
-      padding: 20px;
-      flex: 1;
-      overflow-y: auto;
-      background: var(--chat-bg);
-      transition: background 0.3s ease;
-    }
-    
-    .chat-bubble {
-      padding: 12px 18px;
-      margin-block-end: 12px;
-      border-radius: 18px;
-      max-inline-size: 80%;
-      word-wrap: break-word;
-      box-shadow: 0 4px 6px var(--shadow);
-      transition: transform 0.2s ease, background 0.3s ease;
-    }
-    
-    .chat-bubble:hover {
-      transform: translateY(-2px) scale(1.01);
-    }
-    
-    .user {
-      background: var(--bubble-user);
-      align-self: flex-end;
-      margin-inline-start: auto;
-    }
-    
-    .agent {
-      background: var(--bubble-agent);
-      align-self: flex-start;
-      margin-inline-end: auto;
-    }
-    
-    /* INPUT BAR */
-    .input-section {
-      display: flex;
-      padding: 12px 20px;
-      background: white;
-      position: fixed;
-      inset-block-end: 0;
-      inline-size: 100%;
-      gap: 10px;
-      box-shadow: 0 -2px 8px var(--shadow);
-      background: linear-gradient(to right, #f9fafb, #e0f2fe);
-    }
-    
-    input[type='text'] {
-      flex: 1;
-      padding: 10px 14px;
-      font-size: 16px;
-      border: 1px solid #cc0b0b;
-      border-radius: 12px;
-      outline: none;
-    }
-    
-    button {
-      padding: 10px 16px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      margin-inline-end: 30px;
-      margin-block-start: 5px;
-    }
-    button#darkModeToggle {
-    margin-inline-end: 20px;
+:root {
+  --bg-color: #f4f4f4;
+  --text-color: #222;
+  --chat-bg: white;
+  --bubble-user: #dcf8c6;
+  --bubble-agent: #e6e6e6;
+  --primary: #4f46e5;
+  --shadow: rgba(0, 0, 0, 0.1);
 }
-    
-    button:hover {
-      background: #4338ca;
-    }
-    .bubble-actions {
+
+body.dark-mode {
+  --bg-color: #1f1f1f;
+  --text-color: #eee;
+  --chat-bg: #2a2a2a;
+  --bubble-user: #33691e;
+  --bubble-agent: #424242;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: var(--bg-color);
+  color: var(--text-color);
+  block-size: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  block-size: 100vh;
+}
+
+/* HEADER/NAVBAR */
+.header {
+  background: linear-gradient(to right, #4f46e5, #3b82f6);
+  color:rgb(222, 225, 44);
+  padding: 15px 10px;
+  display: flex;
+  justify-content: space-between ;
+  align-items: center;
+  position: fixed;
+  inset-block-start: 0;
+  inline-size: 100%;
+  z-index: 1000;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.header-right input {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+}
+
+/* CHATBOX */
+.chatbox {
+  margin-block-start: 70px; /* below header */
+  margin-block-end: 70px; /* above input bar */
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+  background: var(--chat-bg);
+  transition: background 0.3s ease;
+}
+
+.chat-bubble {
+  padding: 12px 18px;
+  margin-block-end: 12px;
+  border-radius: 18px;
+  max-inline-size: 80%;
+  word-wrap: break-word;
+  box-shadow: 0 4px 6px var(--shadow);
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.chat-bubble:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.user {
+  background: var(--bubble-user);
+  align-self: flex-end;
+  margin-inline-start: auto;
+}
+
+.agent {
+  background: var(--bubble-agent);
+  align-self: flex-start;
+  margin-inline-end: auto;
+}
+
+/* INPUT BAR */
+.input-section {
+  display: flex;
+  padding: 12px 20px;
+  background: white;
+  position: fixed;
+  inset-block-end: 0;
+  inline-size: 100%;
+  gap: 10px;
+  box-shadow: 0 -2px 8px var(--shadow);
+  background: linear-gradient(to right, #f9fafb, #e0f2fe);
+}
+
+input[type='text'] {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #cc0b0b;
+  border-radius: 12px;
+  outline: none;
+}
+
+button {
+  padding: 10px 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-inline-end: 30px;
+  margin-block-start: 5px;
+}
+
+button#darkModeToggle {
+  margin-inline-end: 20px;
+}
+
+button:hover {
+  background: #4338ca;
+}
+
+.bubble-actions {
   margin-block-start: 10px;
 }
 
@@ -169,6 +171,7 @@
   background-color: #c7d2fe;
   border-color: #818cf8;
 }
+
 /* DARK MODE TOGGLE */
 /* Dark mode styles for action buttons inside bubbles */
 .dark-mode .bubble-actions button {
@@ -181,11 +184,13 @@
   background-color: #334155;
   border-color: #64748b;
 }
+
 /* Light mode (default) */
 .copy-btn {
   background-color: #fef08a;
   color: #1e293b;
 }
+
 .edit-btn {
   background-color: #d1fae5;
   color:rgb(57, 48, 14);
@@ -196,9 +201,46 @@
   background-color: #1f2937;
   color: #facc15;
 }
+
 .dark-mode .edit-btn {
   background-color:rgb(83, 145, 171);
   color: #ffffff;
+}
+
+/* -------------------------- */
+/* 📱 MOBILE RESPONSIVENESS */
+/* -------------------------- */
+@media screen and (max-width: 600px) {
+  .header h1 {
+    font-size: 1.2rem;
+  }
+
+  .header-right input {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .chat-bubble {
+    font-size: 0.9rem;
+    padding: 10px 14px;
+    max-inline-size: 100%;
+  }
+
+  input[type='text'] {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 8px 10px;
+    margin-inline-end: 30px;
+  }
+
+  .bubble-actions button {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
 }
 
 
