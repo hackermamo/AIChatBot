@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Posting Agent</title>
+  </head>
+  <style>
+    :root {
+      --bg-color: #f4f4f4;
+      --text-color: #222;
+      --chat-bg: white;
+      --bubble-user: #dcf8c6;
+      --bubble-agent: #e6e6e6;
+      --primary: #4f46e5;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+    
+    body.dark-mode {
+      --bg-color: #1f1f1f;
+      --text-color: #eee;
+      --chat-bg: #2a2a2a;
+      --bubble-user: #33691e;
+      --bubble-agent: #424242;
+    }
+    
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: var(--bg-color);
+      color: var(--text-color);
+      block-size: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      block-size: 100vh;
+    }
+    
+    /* HEADER/NAVBAR */
+    .header {
+      background: linear-gradient(to right, #4f46e5, #3b82f6);
+      color:rgb(222, 225, 44);
+      padding: 15px 10px;
+      display: flex;
+      justify-content: space-between ;
+      align-items: center;
+      position: fixed;
+      inset-block-start: 0;
+      inline-size: 100%;
+      z-index: 1000;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+   
+    .header-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .header-right input {
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+    
+    /* CHATBOX */
+    .chatbox {
+      margin-block-start: 70px; /* below header */
+      margin-block-end: 70px; /* above input bar */
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+      background: var(--chat-bg);
+      transition: background 0.3s ease;
+    }
+    
+    .chat-bubble {
+      padding: 12px 18px;
+      margin-block-end: 12px;
+      border-radius: 18px;
+      max-inline-size: 80%;
+      word-wrap: break-word;
+      box-shadow: 0 4px 6px var(--shadow);
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+    
+    .chat-bubble:hover {
+      transform: translateY(-2px) scale(1.01);
+    }
+    
+    .user {
+      background: var(--bubble-user);
+      align-self: flex-end;
+      margin-inline-start: auto;
+    }
+    
+    .agent {
+      background: var(--bubble-agent);
+      align-self: flex-start;
+      margin-inline-end: auto;
+    }
+    
+    /* INPUT BAR */
+    .input-section {
+      display: flex;
+      padding: 12px 20px;
+      background: white;
+      position: fixed;
+      inset-block-end: 0;
+      inline-size: 100%;
+      gap: 10px;
+      box-shadow: 0 -2px 8px var(--shadow);
+      background: linear-gradient(to right, #f9fafb, #e0f2fe);
+    }
+    
+    input[type='text'] {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 16px;
+      border: 1px solid #cc0b0b;
+      border-radius: 12px;
+      outline: none;
+    }
+    
+    button {
+      padding: 10px 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-inline-end: 30px;
+      margin-block-start: 5px;
+    }
+    button#darkModeToggle {
+    margin-inline-end: 20px;
+}
+    
+    button:hover {
+      background: #4338ca;
+    }
+    .bubble-actions {
+  margin-block-start: 10px;
+}
+
+.bubble-actions button {
+  margin-inline-end: 5px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.bubble-actions button:hover {
+  background-color: #c7d2fe;
+  border-color: #818cf8;
+}
+/* DARK MODE TOGGLE */
+/* Dark mode styles for action buttons inside bubbles */
+.dark-mode .bubble-actions button {
+  background-color: #1e293b;
+  color: #f8fafc;
+  border-color: #475569;
+}
+
+.dark-mode .bubble-actions button:hover {
+  background-color: #334155;
+  border-color: #64748b;
+}
+/* Light mode (default) */
+.copy-btn {
+  background-color: #fef08a;
+  color: #1e293b;
+}
+.edit-btn {
+  background-color: #d1fae5;
+  color:rgb(57, 48, 14);
+}
+
+/* Dark mode overrides */
+.dark-mode .copy-btn {
+  background-color: #1f2937;
+  color: #facc15;
+}
+.dark-mode .edit-btn {
+  background-color:rgb(83, 145, 171);
+  color: #ffffff;
+}
+
+
+
+  </style>
+  <body>
+    <div class="container">
+      <!-- Fixed top navbar -->
+      <header class="header">
+        <h1>AI Posting Agent</h1>
+        <div class="header-right">
+          <input type="text" id="searchInput" placeholder="🔍 Search tweets..." onkeyup="searchTweets()" />
+          <button id="darkModeToggle" onclick="toggleDarkMode()">🌙</button>
+        </div>
+      </header>
+
+      <!-- Scrollable chatbox -->
+      <main class="chatbox" id="chat">
+        <!-- Messages will be inserted here -->
+      </main>
+
+      <!-- Fixed bottom input bar -->
+      <div class="input-section">
+        <input id="queryInput" type="text" placeholder="Type your idea..." />
+        <button onclick="submitQuery()">Send</button>
+      </div>
+    </div>
+
+    <script>
+const chat = document.getElementById('chat')
+let currentTitle = ''
+
+// 🔁 Restore title on reload (if exists in localStorage)
+const savedTitle = localStorage.getItem('lastGeneratedTitle')
+if (savedTitle) {
+  currentTitle = savedTitle
+  addBubble(`📝 ${currentTitle}`)
+  showPlatformSelector()
+}
+
+// Append a message bubble to the chat
+function addBubble(text, sender = 'agent') {
+  const bubble = document.createElement('div')
+  bubble.className = `chat-bubble ${sender}`
+
+  // Special formatting if it's a title
+  if (sender === 'agent' && text.startsWith('📝 ')) {
+    const cleanText = text.replace('📝 ', '')
+
+    bubble.innerHTML = `
+      <span id="title-text">${cleanText}</span>
+      <div class="bubble-actions">
+        <button class="copy-btn" onclick="copyToClipboard()">📋 Copy</button>
+        <button class="edit-btn" onclick="editTitle()">✏️ Edit</button>
+      </div>
+    `
+  } else {
+    bubble.textContent = text
+  }
+
+  chat.appendChild(bubble)
+  chat.scrollTop = chat.scrollHeight
+}
+
+// Toggle dark mode
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode')
+}
+
+// Submit query to backend and get AI-generated title
+function submitQuery() {
+  const input = document.getElementById('queryInput')
+  const query = input.value.trim()
+  if (!query) return
+
+  addBubble(query, 'user')
+  input.value = ''
+
+  fetch('http://localhost:8000/generate-title', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query })
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      currentTitle = data.title
+
+      // ✅ Save to localStorage
+      localStorage.setItem('lastGeneratedTitle', currentTitle)
+
+      addBubble(`📝 ${currentTitle}`)
+      showPlatformSelector()
+    })
+    .catch((err) => {
+      console.error('Error generating title:', err)
+      addBubble('⚠️ Failed to generate title. Please try again.')
+    })
+}
+
+// Show platform checkbox options and post button
+function showPlatformSelector() {
+  // Remove any existing selector before appending a new one
+  const oldSelector = document.querySelector('.platform-buttons')
+  if (oldSelector) oldSelector.remove()
+
+  const div = document.createElement('div')
+  div.className = 'chat-bubble agent platform-buttons'
+  div.innerHTML = `
+    <p>Where should I post it?</p>
+    <label><input type="checkbox" value="Twitter" /> Twitter</label>
+    <label><input type="checkbox" value="Facebook" /> Facebook</label><br>
+    <button onclick="submitPost(this)">Post</button>
+  `
+  chat.appendChild(div)
+  chat.scrollTop = chat.scrollHeight
+}
+
+// Post the selected title to chosen platforms
+function submitPost(button) {
+  const checkboxes = button.parentElement.querySelectorAll('input[type=checkbox]:checked')
+  const platforms = Array.from(checkboxes).map((cb) => cb.value)
+
+  if (!platforms.length) {
+    alert('Select at least one platform.')
+    return
+  }
+
+  button.disabled = true
+  button.textContent = 'Posting...'
+
+  fetch('http://localhost:8000/post', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title: currentTitle, platforms })
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      addBubble('✅ Posted to: ' + platforms.join(', '))
+
+      // ✅ Optionally clear storage after posting (uncomment if needed)
+      // localStorage.removeItem('lastGeneratedTitle')
+    })
+    .catch((err) => {
+      console.error('Error posting:', err)
+      addBubble('⚠️ Failed to post. Please try again.')
+    })
+    .finally(() => {
+      button.disabled = false
+      button.textContent = 'Post'
+    })
+}
+
+
+// 📋 Copy title text to clipboard
+function copyToClipboard() {
+  const titleText = document.getElementById('title-text').textContent
+  navigator.clipboard.writeText(titleText).then(() => {
+    alert('Title copied to clipboard!')
+  })
+}
+
+// ✏️ Edit title and update the currentTitle variable
+function editTitle() {
+  const titleSpan = document.getElementById('title-text')
+  const current = titleSpan.textContent
+  const newTitle = prompt('Edit your title:', current)
+
+  if (newTitle !== null && newTitle.trim() !== '') {
+    titleSpan.textContent = newTitle
+    currentTitle = newTitle
+  }
+}
+
+    </script>
+  </body>
+</html>

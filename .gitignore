@@ -1,0 +1,1 @@
+echo -e ".env\n__pycache__/\n*.jsonl\n.venv/" > .gitignore
