@@ -306,11 +306,6 @@ function addBubble(text, sender = 'agent') {
 }
 
 // Toggle dark mode
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode')
-}
-
-// Submit query to backend and get AI-generated title
 function submitQuery() {
   const input = document.getElementById('queryInput')
   const query = input.value.trim()
@@ -319,7 +314,12 @@ function submitQuery() {
   addBubble(query, 'user')
   input.value = ''
 
-  fetch('http://localhost:8000/generate-title', {
+  // 🔁 Auto-detect local or production backend
+  const BASE_URL = window.location.origin.includes("localhost")
+    ? "http://localhost:8000"
+    : "https://aichatbot-1-d86s.onrender.com"
+
+  fetch(`${BASE_URL}/generate-title`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query })
@@ -329,7 +329,9 @@ function submitQuery() {
       currentTitle = data.title
 
       // ✅ Save to localStorage
+      localStorage.setItem('lastQuery', query)
       localStorage.setItem('lastGeneratedTitle', currentTitle)
+      
 
       addBubble(`📝 ${currentTitle}`)
       showPlatformSelector()
@@ -339,7 +341,6 @@ function submitQuery() {
       addBubble('⚠️ Failed to generate title. Please try again.')
     })
 }
-
 // Show platform checkbox options and post button
 function showPlatformSelector() {
   // Remove any existing selector before appending a new one
