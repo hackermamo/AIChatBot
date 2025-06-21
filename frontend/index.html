@@ -379,7 +379,12 @@ function submitPost(button) {
   button.disabled = true
   button.textContent = 'Posting...'
 
-  fetch('https://aichatbot-1-d86s.onrender.com', {
+  // ✅ Auto-detect backend URL
+  const BASE_URL = window.location.hostname === "localhost"
+    ? "http://localhost:8000"
+    : "https://aichatbot-1-d86s.onrender.com"
+
+  fetch(`${BASE_URL}/post`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ title: currentTitle, platforms })
