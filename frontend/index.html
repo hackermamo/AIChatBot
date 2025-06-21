@@ -426,6 +426,19 @@ function editTitle() {
   }
 }
 
+window.onload = function () {
+  const history = JSON.parse(localStorage.getItem('chatHistory')) || []
+
+  history.forEach(({ query, title }) => {
+    addBubble(query, 'user')
+    addBubble(`📝 ${title}`)
+  })
+
+  if (history.length > 0) {
+    currentTitle = history[history.length - 1].title
+    showPlatformSelector()
+  }
+}
     </script>
   </body>
 </html>
