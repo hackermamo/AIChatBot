@@ -379,12 +379,7 @@ function submitPost(button) {
   button.disabled = true
   button.textContent = 'Posting...'
 
-  // ✅ Auto-detect backend URL
-  const BASE_URL = window.location.hostname === "localhost"
-    ? "http://localhost:8000"
-    : "https://aichatbot-1-d86s.onrender.com"
-
-  fetch(`${BASE_URL}/post`, {
+  fetch('https://aichatbot-1-d86s.onrender.com', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ title: currentTitle, platforms })
@@ -405,6 +400,8 @@ function submitPost(button) {
       button.textContent = 'Post'
     })
 }
+
+// iss main chnages kar ke mujhe pura code do ,, ut dont chnage any things
 
 // 📋 Copy title text to clipboard
 function copyToClipboard() {
